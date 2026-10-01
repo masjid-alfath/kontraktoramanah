@@ -721,6 +721,124 @@
         aspect-ratio: 4 / 3;
     }
 }
+
+        /* MOBILE NAVIGATION */
+        .menu-toggle {
+            display: none;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle span,
+        .menu-toggle span::before,
+        .menu-toggle span::after {
+            display: block;
+            width: 20px;
+            height: 2px;
+            border-radius: 2px;
+            background: currentColor;
+            transition: transform .2s ease, opacity .2s ease;
+        }
+
+        .menu-toggle span {
+            position: relative;
+        }
+
+        .menu-toggle span::before,
+        .menu-toggle span::after {
+            content: "";
+            position: absolute;
+            left: 0;
+        }
+
+        .menu-toggle span::before {
+            top: -6px;
+        }
+
+        .menu-toggle span::after {
+            top: 6px;
+        }
+
+        .menu-toggle[aria-expanded="true"] span {
+            background: transparent;
+        }
+
+        .menu-toggle[aria-expanded="true"] span::before {
+            top: 0;
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle[aria-expanded="true"] span::after {
+            top: 0;
+            transform: rotate(-45deg);
+        }
+
+        @media (max-width: 800px) {
+            .navin {
+                position: relative;
+            }
+
+            .menu-toggle {
+                display: inline-flex;
+                margin-left: auto;
+            }
+
+            .links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                padding: 18px 0 22px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                background: #080808;
+                border: 0;
+                border-top: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .links.is-open {
+                display: flex;
+            }
+
+            .links a:not(.btn) {
+                display: block;
+            }
+
+            .links a {
+                width: 100%;
+                padding: 15px 24px;
+                border-radius: 0;
+            }
+
+            .links a:hover {
+                background: var(--surface2);
+            }
+
+            .mobile-contact {
+                width: auto !important;
+                margin: 12px 24px 0;
+                padding: 14px 18px !important;
+                border-radius: 6px !important;
+                background: var(--accent);
+                color: #111 !important;
+                font-weight: 700;
+                text-align: center;
+            }
+        }
+
 </style>
 
     <script type="application/ld+json">
@@ -759,8 +877,22 @@
         <div class="wrap navin"><a class="brand" href="#home"><img
                     src="static/Logo-White.webp"
                     alt="Logo Kontraktor Amanah"><span>Kontraktor Amanah</span></a>
-            <nav class="links"><a href="#tentang">Tentang</a><a href="#layanan">Layanan</a><a
-                    href="#proyek">Proyek</a></nav>
+            <button class="menu-toggle"
+                type="button"
+                aria-label="Buka menu navigasi"
+                aria-expanded="false"
+                aria-controls="primary-navigation">
+                <span aria-hidden="true"></span>
+            </button>
+            <nav class="links" id="primary-navigation" aria-label="Navigasi utama">
+                <a href="#tentang">Tentang</a>
+                <a href="#layanan">Layanan</a>
+                <a href="#proyek">Proyek</a>
+                <a class="mobile-contact"
+                   href="https://api.whatsapp.com/send?phone=628112113029&text=Assalamualaikum%20Kontraktor%20Amanah%2C%20Saya%20ingin%20berkonsultasi"
+                   target="_blank"
+                   rel="noopener noreferrer">Konsultasi WhatsApp</a>
+            </nav>
         </div>
     </header>
     <main id="home">
@@ -974,6 +1106,54 @@
         </div>
     </footer>
     
+
+    <script>
+        (() => {
+            const toggle = document.querySelector('.menu-toggle');
+            const menu = document.querySelector('#primary-navigation');
+
+            if (!toggle || !menu) return;
+
+            const closeMenu = () => {
+                menu.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Buka menu navigasi');
+            };
+
+            toggle.addEventListener('click', () => {
+                const open = toggle.getAttribute('aria-expanded') === 'true';
+
+                menu.classList.toggle('is-open', !open);
+                toggle.setAttribute('aria-expanded', String(!open));
+                toggle.setAttribute(
+                    'aria-label',
+                    open ? 'Buka menu navigasi' : 'Tutup menu navigasi'
+                );
+            });
+
+            menu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                    toggle.focus();
+                }
+            });
+
+            document.addEventListener('click', event => {
+                if (
+                    toggle.getAttribute('aria-expanded') === 'true' &&
+                    !menu.contains(event.target) &&
+                    !toggle.contains(event.target)
+                ) {
+                    closeMenu();
+                }
+            });
+        })();
+    </script>
+
 </body>
 
 </html>

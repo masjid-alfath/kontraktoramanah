@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+__MACOSX/
+
+# Local backups
+*.bak
+*.backup
+*before-seo*.html
+*contact-backup*
+*projects-backup*
